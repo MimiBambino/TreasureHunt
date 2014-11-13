@@ -122,15 +122,15 @@ Gem.prototype.update = function() {
     this.y = choice(enemyPosY);
     this.count += 1;
     if (this.count === 1){
-      var scoreHTML = "<p class='num'>%score% Gem collected!</p>";
+      var scoreHTML = "<p class='score'>%score% Gem collected!</p>";
       var formattedScore = scoreHTML.replace("%score%", this.count);
     } else {
-      var scoreHTML = "<p class='num'><span class='num'>%score%<span> Gems collected!</p>";
+      var scoreHTML = "<p class='score'><span class='num'>%score%<span> Gems collected!</p>";
       var formattedScore = scoreHTML.replace("%score%", this.count);
     }
-    $(".num").remove();
+    $(".score").remove();
     //////////  Update score  //////////
-    $(".score").append(formattedScore);
+    $(".gems").append(formattedScore);
   }
 }
 

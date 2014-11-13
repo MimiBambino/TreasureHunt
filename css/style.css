@@ -148,23 +148,8 @@ header h4 {
 	color: #333;
 }
 
-.num {
-  color: #008cb0;
-}
-
 header .row {
 	margin-left: 0;
-}
-
-#instructionsDiv {
-	background-color: #008cb0;
-	color: white;
-	border-radius: 5px;
-	left: 10px;
-}
-
-#instructionsDiv {
-	font-weight: 300;
 }
 
 /* Footer */
@@ -188,43 +173,6 @@ footer {
 	max-height: 20px;"
 }
 
-/* Media Queries */
-
-@media screen and (max-width: 1200px) {
-	.programming-col h1 {
-	font-size: 3em;
-	}
-	.navy-col, .lawyer-col {
-		height: 400px;
-	}
-}
-
-@media screen and (max-width: 1000px) {
-	.main ul li{
-		margin-bottom: -20px;
-		margin-top: -20px;
-	}
-	footer {
-		padding-top: 30px;
-	}
-	.contact-list {
-		text-align: center;
-	}
-	.navy-col, .lawyer-col {
-		height: 260px;
-	}
-
-}
-
-@media screen and (max-width: 700px){
-	footer {
-		padding-top: 60px;
-	}
-	#mapDiv {
-		height: 300px;
-		width: 300px;
-	}
-	.navy-col, .lawyer-col {
-		height: auto;
-	}
+#c {
+  margin-top: -55px;
 }
