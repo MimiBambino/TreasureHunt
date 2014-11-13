@@ -10,7 +10,7 @@ var choice = function (array) {
 };
 
 var Game = function(){
-  
+
 }
 
 // Enemies to avoid.
@@ -59,7 +59,7 @@ Enemy.prototype.update = function(dt) {
 
   if (player.x === this.tileX && player.y === this.y) {
     player.reset();
-    gameLife.decrease();
+    heartCount.decrease();
   }
 }
 
@@ -72,6 +72,7 @@ var Player = function() {
   this.pImg = 'images/char-princess-girl.png';
   this.x = 404;
   this.y = 392;
+  this.lives = 3;
 }
 
 Player.prototype.update = function() {
@@ -88,7 +89,7 @@ Player.prototype.update = function() {
 
   if (this.y < 60) {
     this.reset();
-    gameLife.decrease();
+    heartCount.decrease();
   }
 }
 
@@ -124,7 +125,7 @@ Gem.prototype.update = function() {
       var scoreHTML = "<p class='num'>%score% Gem collected!</p>";
       var formattedScore = scoreHTML.replace("%score%", this.count);
     } else {
-      var scoreHTML = "<p class='num'>%score% Gems collected!</p>";
+      var scoreHTML = "<p class='num'><span class='num'>%score%<span> Gems collected!</p>";
       var formattedScore = scoreHTML.replace("%score%", this.count);
     }
     $(".num").remove();
@@ -137,18 +138,29 @@ Gem.prototype.render = function() {
   ctx.drawImage(Resources.get(this.gemImg), this.x, this.y);
 }
 
-// Keep track of player lives 
-var Life = function() {
-  this.life = 5;
+// Keep track of player lives
+var Heart = function() {
+  this.sprite = 'images/Heartsmall.png';
 }
 
-Life.prototype.decrease = function() {
-  if (this.life > 0) {
-    this.life -= 1;
-  }
-  else
-    // replace with modal
+Heart.prototype.decrease = function() {
+  if (player.lives === 0) {
+    $(".heart").remove();
     alert("Game Over!");
+  } else {
+    player.lives -= 1;
+    console.log(player.lives);
+    this.display();
+  }
+}
+
+Heart.prototype.display = function() {
+  $(".heart").remove();
+  for (var i = 0; i < player.lives; i++) {
+    var HTML = "<div class='col-md-2 heart'><img src='%img%' alt='heart'></div>";
+    var formattedHTML = HTML.replace("%img%", this.sprite);
+    $(".hearts").append(formattedHTML);
+  }
 }
 
 ////////////// Playing with Guns and Land Mines ///////////////
@@ -229,7 +241,7 @@ var allEnemies = [enemyA, enemyB, enemyC, enemyD];
 
 var player = new Player();
 var gem = new Gem();
-var gameLife = new Life();
+var heartCount = new Heart();
 var bullet = new Bullet();
 
 // This listens for key presses and sends the keys to your
@@ -248,5 +260,5 @@ document.addEventListener('keyup', function(e) {
 document.addEventListener('keydown', function(e) {
   if ([37, 38, 39, 40, 32].indexOf(e.keyCode) > -1) {
     e.preventDefault();
-  }  
+  }
 }, false);
