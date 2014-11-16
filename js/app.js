@@ -200,6 +200,9 @@ Bullet.prototype.update = function(dt) {
   // all computers.
   this.y -= this.speed * dt;
   // Remove the bullet if it goes offscreen
+  if (this.y < 65){
+    allBullets.splice(this);
+  }
 }
 
 ///////////// End Playing with Guns and Land Mines /////////////

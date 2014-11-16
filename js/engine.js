@@ -38,9 +38,10 @@ var Engine = (function(global) {
     });
     player.update();
     gem.update();
-    allBullets.forEach(function(bullet) {
+    for (var i = 0; i < allBullets.length; i++){
+      var bullet = allBullets[i];
       bullet.update(dt);
-    });
+    }
   }
 
   function render() {
