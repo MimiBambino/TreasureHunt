@@ -1,3 +1,6 @@
+$(".close").on("click", function(){
+  $("#InstructionsModal").removeClass('show');
+});
 var enemyPosY = [60, 143, 226];
 var enemySpeed = [70, 100, 160, 200];
 var gemPosX = [0, 101, 202, 303, 404, 505, 606, 707, 808];
@@ -149,10 +152,8 @@ Heart.prototype.decrease = function() {
   } else {
     $(".heart").remove();
     game.paused = true;
-    bootbox.alert(gameOverMessage, function(){
-      console.log("Boom");
-      //bootbox.alert(introMessage);
-      });
+    $("#GOModal").modal();
+    $(".btn").text('Play Again!');
   }
 }
 
@@ -169,10 +170,8 @@ var Game = function(){
   this.paused = false;
 };
 
-var introMessage = "<h2>Welcome to Treasure Hunt!</h2><p>To play use your arrow keys in the direction you wish to go.<p><p>Try to gather as many gems as you can without getting eaten by the bugs.</p>";
+var introMessage = "";
 var gameOverMessage = "<h1>Game Over</h1><p>What a shame and you were doing so well. Would you like to play again?</p>";
-
-
 
 ////////////// Playing with Guns and Land Mines ///////////////
 

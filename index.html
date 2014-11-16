@@ -41,11 +41,40 @@
         </div>
       </div>
     </div>
+<!--Instructions Modal view-->
+    <div class="modal show" id='InstructionsModal'>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h2 class="modal-title">Welcome to Treasure Hunt!</h2>
+          </div>
+          <div class="modal-body">
+            <p>To play use your arrow keys in the direction you wish to go.</p>
+            <p>Try to gather as many gems as you can without getting eaten by the bugs.</p>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+<!--Game Over Modal view-->
+    <div class="modal fade" id='GOModal'>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h2 class="modal-title">Game Over</h2>
+          </div>
+          <div class="modal-body">
+            <p>What a shame and you were doing so well!  Would you like to play again?</p>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 <!--FOOTER-->
     <div class='container'>
       <footer class='row text-center'>
         <div class='col-md-12 text-center'>
-          <p><button type='button' class='btn img-rounded show-all' value="Reload Page" onClick="window.location.reload()">Restart Game</button></p>
+          <p><button type='button' class='btn img-rounded show-all' value="Reload Page" onClick="window.location.reload()">Restart Game!</button></p>
           <p>Made with <span id='javascript'>JavaScript</span>.  Code available at <span><a target='_blank' href='https://github.com/MimiBambino/TreasureHunt'><img class='github' src='images/GitHub.png' alt='GitHub'></a></span>
           </p>
           <p>&copy; Cynthia O'Donnell 2014</p>
