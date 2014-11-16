@@ -1,9 +1,9 @@
 $(".close").on("click", function(){
   $("#InstructionsModal").removeClass('show');
 });
-var enemyPosY = [60, 143, 226];
+var rows = [60, 143, 226];
 var enemySpeed = [70, 100, 160, 200];
-var gemPosX = [0, 101, 202, 303, 404, 505, 606, 707, 808];
+var columns = [0, 101, 202, 303, 404, 505, 606, 707, 808];
 var gemImages = ['images/gemOrange.png', 'images/gemBlue.png', 'images/gemGreen.png'];
 
 // Randomly choose an element from an array.
@@ -11,11 +11,39 @@ var choice = function (array) {
     return array[Math.floor(Math.random() * array.length)];
 };
 
+// Determine if bounds of entities collide
+// From Pro JavaScript Development
+var checkCollision = function(charLeft, charWidth, charTop,
+  charHeight, obstacleLeft, obstacleWidth, obstacleTop, obstacleHeight){
+    // Define vars to track collision on x axis and on y axis
+    var verticalCollision = false,
+        horizontalCollision = false,
+
+        // define bounds of character and obstacle
+        charRight = charLeft + charWidth,
+        charBottom = charTop + charHeight,
+        obstacleRight = obstacleLeft + obstacleWidth,
+        obstacleBottom = obstacleTop + obstacleHeight;
+    // y-axis collision occurs if
+      // the character's top or bottom is between the top and bottom of obstacle
+      if ((charTop > obstacleTop && charTop < obstacleBottom) ||
+         (charBottom > obstacleTop && charTop < obstacleBottom)){
+           verticalCollision = true;
+         }
+    // x-axis collision occurs if
+      // the character's left or right is between the left and right of obstacle
+      if ((charLeft > obstacleLeft && charLeft < obstacleRight) ||
+         (charRight > obstacleLeft && charLeft < obstacleRight )){
+           horizontalCollision = true;
+         }
+    return verticalCollision && horizontalCollision;
+  }
+
 // Enemies to avoid.
 var Enemy = function() {
   this.sprite = 'images/enemy-bug.png';
   this.x = -100;
-  this.y = choice(enemyPosY);
+  this.y = choice(rows);
   this.speed = choice(enemySpeed);
 }
 // Update enemy's position.
@@ -28,12 +56,7 @@ Enemy.prototype.update = function(dt) {
     // if bug crawls off the canvas
     if (this.x > 960) {
       // place him back at the beginning
-      this.x = -100;
-      this.y = this.y + 83;
-      this.speed = choice(enemySpeed);
-      if (this.y > 226) {
-        this.y = 60;
-      }
+      this.reset();
     }
   }
 // track which tile each bug is on
@@ -64,6 +87,21 @@ Enemy.prototype.update = function(dt) {
     player.reset();
     heartCount.decrease();
   }
+  for (var i = 0; i < allBullets.length; i++){
+    var bullet = allBullets[i];
+    if (bullet.x === this.tileX && bullet.x === this.y) {
+      this.reset();
+    }
+  }
+}
+
+Enemy.prototype.reset = function() {
+  this.x = -100;
+  this.y = this.y + 83;
+  this.speed = choice(enemySpeed);
+  if (this.y > 226) {
+    this.y = 60;
+  }
 }
 
 Enemy.prototype.render = function() {
@@ -91,7 +129,6 @@ Player.prototype.update = function() {
       this.y = this.y + 83;
     } else if (this.ctlKey === 'space' && this.gunFound) {
       allBullets.push(new Bullet());
-      console.log(allBullets.length);
     }
     this.ctlKey = null;
 
@@ -118,8 +155,8 @@ Player.prototype.handleInput = function(key) {
 // Choose gem and place on canvas.
 var Gem = function() {
   this.gemImg = choice(gemImages);
-  this.x = choice(gemPosX);
-  this.y = choice(enemyPosY);
+  this.x = choice(columns);
+  this.y = choice(rows);
   this.count = 0;
 }
 
@@ -127,8 +164,8 @@ var Gem = function() {
 Gem.prototype.update = function() {
   if (player.x === this.x && player.y === this.y) {
     this.gemImg = choice(gemImages);
-    this.x = choice(gemPosX);
-    this.y = choice(enemyPosY);
+    this.x = choice(columns);
+    this.y = choice(rows);
     this.count += 1;
     if (this.count === 1){
       var scoreHTML = "<p class='score'>%score% Gem collected!</p>";
