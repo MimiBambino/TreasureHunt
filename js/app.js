@@ -89,7 +89,7 @@ Player.prototype.update = function() {
       this.y = this.y - 83;
     } else if (this.ctlKey === 'down' && this.y != 392) {
       this.y = this.y + 83;
-    } else if (this.ctlKey === 'space') {
+    } else if (this.ctlKey === 'space' && this.gunFound) {
       allBullets.push(new Bullet());
       console.log(allBullets.length);
     }
@@ -141,7 +141,7 @@ Gem.prototype.update = function() {
     //////////  Update score  //////////
     $(".gems").append(formattedScore);
     if (this.count == 10){
-      //player.gunFound = true;
+      player.gunFound = true;
       $("#GunModal").modal();
     }
   }
