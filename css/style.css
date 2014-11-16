@@ -160,6 +160,18 @@ footer {
 	clear: both;
 }
 
+.btn {
+  font-size: 1.5em;
+}
+
+.btn:hover {
+  background-color: #999;
+}
+
+.btn:focus {
+  outline: none;
+}
+
 #javascript {
 	font-family: 'Montez', 'Brush Script MT', 'Papyrus', cursive;
 	color: #008cb0 ;
@@ -175,4 +187,8 @@ footer {
 
 #c {
   margin-top: -55px;
+}
+
+.modal-backdrop.in {
+  opacity: 0;
 }

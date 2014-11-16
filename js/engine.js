@@ -22,7 +22,7 @@ var Engine = (function(global) {
   };
 
   function init() {
-
+    //reset();
     lastTime = Date.now();
     main();
   }
@@ -87,7 +87,7 @@ var Engine = (function(global) {
 })(this);
 
 // Animation helper  from https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/sprite.js
-
+/*
 (function() {
     function Sprite(url, pos, size, speed, frames, dir, once) {
         this.pos = pos;
@@ -142,3 +142,4 @@ var Engine = (function(global) {
 
     window.Sprite = Sprite;
 })();
+*/

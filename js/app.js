@@ -4,14 +4,9 @@ var gemPosX = [0, 101, 202, 303, 404, 505, 606, 707, 808];
 var gemImages = ['images/gemOrange.png', 'images/gemBlue.png', 'images/gemGreen.png'];
 
 // Randomly choose an element from an array.
-// Shamelessly borrowed from http://bahalps.github.io/frontend-nanodegree-arcade-game/
 var choice = function (array) {
     return array[Math.floor(Math.random() * array.length)];
 };
-
-var Game = function(){
-
-}
 
 // Enemies to avoid.
 var Enemy = function() {
@@ -25,13 +20,15 @@ Enemy.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  this.x = this.x + (this.speed * dt);
-  if (this.x > 960) {
-    this.x = -100;
-    this.y = this.y + 83;
-    this.speed = choice(enemySpeed);
-    if (this.y > 226) {
-      this.y = 60;
+  if (!game.paused) {
+    this.x = this.x + (this.speed * dt);
+    if (this.x > 960) {
+      this.x = -100;
+      this.y = this.y + 83;
+      this.speed = choice(enemySpeed);
+      if (this.y > 226) {
+        this.y = 60;
+      }
     }
   }
 
@@ -72,24 +69,26 @@ var Player = function() {
   this.pImg = 'images/char-princess-girl.png';
   this.x = 404;
   this.y = 392;
-  this.lives = 3;
+  this.lives = 3;  // Keep track of how many times player has died.
 }
 
 Player.prototype.update = function() {
-  if (this.ctlKey === 'left' && this.x != 0) {
-    this.x = this.x - 101;
-  } else if (this.ctlKey === 'right' && this.x != 808) {
-    this.x = this.x + 101;
-  } else if (this.ctlKey === 'up') {
-    this.y = this.y - 83;
-  } else if (this.ctlKey === 'down' && this.y != 392) {
-    this.y = this.y + 83;
-  }
-  this.ctlKey = null;
+  if (!game.paused){
+    if (this.ctlKey === 'left' && this.x != 0) {
+      this.x = this.x - 101;
+    } else if (this.ctlKey === 'right' && this.x != 808) {
+      this.x = this.x + 101;
+    } else if (this.ctlKey === 'up') {
+      this.y = this.y - 83;
+    } else if (this.ctlKey === 'down' && this.y != 392) {
+      this.y = this.y + 83;
+    }
+    this.ctlKey = null;
 
-  if (this.y < 60) {
-    this.reset();
-    heartCount.decrease();
+    if (this.y < 60) {
+      this.reset();
+      heartCount.decrease();
+    }
   }
 }
 
@@ -144,13 +143,16 @@ var Heart = function() {
 }
 
 Heart.prototype.decrease = function() {
-  if (player.lives === 0) {
-    $(".heart").remove();
-    alert("Game Over!");
-  } else {
+  if (player.lives > 0) {
     player.lives -= 1;
-    console.log(player.lives);
     this.display();
+  } else {
+    $(".heart").remove();
+    game.paused = true;
+    bootbox.alert(gameOverMessage, function(){
+      console.log("Boom");
+      //bootbox.alert(introMessage);
+      });
   }
 }
 
@@ -162,6 +164,15 @@ Heart.prototype.display = function() {
     $(".hearts").append(formattedHTML);
   }
 }
+
+var Game = function(){
+  this.paused = false;
+};
+
+var introMessage = "<h2>Welcome to Treasure Hunt!</h2><p>To play use your arrow keys in the direction you wish to go.<p><p>Try to gather as many gems as you can without getting eaten by the bugs.</p>";
+var gameOverMessage = "<h1>Game Over</h1><p>What a shame and you were doing so well. Would you like to play again?</p>";
+
+
 
 ////////////// Playing with Guns and Land Mines ///////////////
 
@@ -243,6 +254,9 @@ var player = new Player();
 var gem = new Gem();
 var heartCount = new Heart();
 var bullet = new Bullet();
+
+var game = new Game();
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
