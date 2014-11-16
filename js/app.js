@@ -24,8 +24,10 @@ Enemy.prototype.update = function(dt) {
   // which will ensure the game runs at the same speed for
   // all computers.
   if (!game.paused) {
-    this.x = this.x + (this.speed * dt);
+    this.x += this.speed * dt;
+    // if bug crawls off the canvas
     if (this.x > 960) {
+      // place him back at the beginning
       this.x = -100;
       this.y = this.y + 83;
       this.speed = choice(enemySpeed);
@@ -34,7 +36,7 @@ Enemy.prototype.update = function(dt) {
       }
     }
   }
-
+// track which tile each bug is on
   if (this.x > -50 && this.x < 50) {
     this.tileX = 0;
   } else if (this.x > 50 && this.x < 150) {
@@ -56,8 +58,9 @@ Enemy.prototype.update = function(dt) {
   } else if (this.x > 850) {
     this.tileX = 1;
   }
-
+// if player is on the same tile as a bug
   if (player.x === this.tileX && player.y === this.y) {
+    // place player at the initial position
     player.reset();
     heartCount.decrease();
   }
@@ -73,6 +76,7 @@ var Player = function() {
   this.x = 404;
   this.y = 392;
   this.lives = 3;  // Keep track of how many times player has died.
+  this.gunFound = false;
 }
 
 Player.prototype.update = function() {
@@ -85,6 +89,9 @@ Player.prototype.update = function() {
       this.y = this.y - 83;
     } else if (this.ctlKey === 'down' && this.y != 392) {
       this.y = this.y + 83;
+    } else if (this.ctlKey === 'space') {
+      allBullets.push(new Bullet());
+      console.log(allBullets.length);
     }
     this.ctlKey = null;
 
@@ -133,6 +140,10 @@ Gem.prototype.update = function() {
     $(".score").remove();
     //////////  Update score  //////////
     $(".gems").append(formattedScore);
+    if (this.count == 10){
+      //player.gunFound = true;
+      $("#GunModal").modal();
+    }
   }
 }
 
@@ -170,74 +181,25 @@ var Game = function(){
   this.paused = false;
 };
 
-var introMessage = "";
-var gameOverMessage = "<h1>Game Over</h1><p>What a shame and you were doing so well. Would you like to play again?</p>";
-
 ////////////// Playing with Guns and Land Mines ///////////////
 
-var bullets = [];
-var explosions = [];
-var isGunFound = true;
-var lastFire = Date.now();
-
 var Bullet = function() {
-  this.bImg = 'img/bullet.png';
+  this.sprite = 'images/bullet.png';
   this.speed = 500;
-  this.shoot = function(){
-      if (player.ctlKey === 'space' && isGunFound && Date.now() - lastFire > 100){
-        var x = player.x;  // Figure out middle of player
-        var y = player.y;  // Figure out middle of player
-
-        bullets.push( { pos: [x, y],
-                        dir: 'up',  // What does 'forward' mean?
-                        sprite: this.bImg });
-        lastFire = Date.now();
-        }
-    }
+  this.x = player.x + 45;
+  this.y = player.y + 40;
 }
 
 Bullet.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.bImg), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 Bullet.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  this.x = this.x + (this.speed * dt);
-  if (this.x > 960) {
-    this.x = -100;
-    this.y = this.y + 83;
-    if (this.y > 226) {
-      this.y = 60;
-    }
-  }
-
-  if (this.x > -50 && this.x < 50) {
-    this.tileX = 0;
-  } else if (this.x > 50 && this.x < 150) {
-    this.tileX = 101;
-  } else if (this.x > 150 && this.x < 250) {
-    this.tileX = 202;
-  } else if (this.x > 250 && this.x < 350) {
-    this.tileX = 303;
-  } else if (this.x > 350 && this.x < 450) {
-    this.tileX = 404;
-  } else if (this.x > 450 && this.x < 550) {
-    this.tileX = 505;
-  } else if (this.x > 550 && this.x < 650) {
-    this.tileX = 606;
-  } else if (this.x > 650 && this.x < 750) {
-    this.tileX = 707;
-  } else if (this.x > 750 && this.x < 850) {
-    this.tileX = 808;
-  } else if (this.x > 850) {
-    this.tileX = 1;
-  }
-
-  if (enemyA.x === this.tileX && enemyA.y === this.y) {
-    enemyA.reset();
-  }
+  this.y -= this.speed * dt;
+  // Remove the bullet if it goes offscreen
 }
 
 ///////////// End Playing with Guns and Land Mines /////////////
@@ -252,8 +214,10 @@ var allEnemies = [enemyA, enemyB, enemyC, enemyD];
 var player = new Player();
 var gem = new Gem();
 var heartCount = new Heart();
-var bullet = new Bullet();
-
+var bulletA = new Bullet();
+var bulletB = new Bullet();
+var bulletC = new Bullet();
+var allBullets = [];
 var game = new Game();
 
 

@@ -38,6 +38,9 @@ var Engine = (function(global) {
     });
     player.update();
     gem.update();
+    allBullets.forEach(function(bullet) {
+      bullet.update(dt);
+    });
   }
 
   function render() {
@@ -66,6 +69,9 @@ var Engine = (function(global) {
     allEnemies.forEach(function(enemy) {
       enemy.render();
     });
+    allBullets.forEach(function(bullet){
+      bullet.render();
+    });
     player.render();
     gem.render();
   }
@@ -79,6 +85,7 @@ var Engine = (function(global) {
     'images/gemOrange.png',
     'images/gemBlue.png',
     'images/gemGreen.png',
+    'images/bullet.png',
     'images/sprites.png'  // Load explosion and bullets
   ]);
   Resources.onReady(init);
