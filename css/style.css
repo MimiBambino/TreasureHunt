@@ -143,9 +143,20 @@ header h4 {
 }
 
 .score {
-	font-size: 2.2em;
+	font-size: 1.3em;
 	font-weight: 400;
 	color: #333;
+}
+.kills {
+  font-size: 1.2em;
+  font-weight: 400;
+  visibility: hidden;
+}
+
+.num {
+  padding: 20px;
+  margin: 10px;
+  font-size: 45px;
 }
 
 header .row {
@@ -191,4 +202,8 @@ footer {
 
 .modal-backdrop.in {
   opacity: 0;
+}
+
+.modal {
+  padding: 200px;
 }

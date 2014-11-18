@@ -20,13 +20,16 @@
     <div class='container'>
       <div class='row'>
         <div class='col-md-12' id='status'>
-          <div class='col-md-3 hearts'>
+          <div class='col-md-2 hearts'>
             <div class='col-md-2 heart'><img src='images/Heartsmall.png' alt='heart'></div>
             <div class='col-md-2 heart'><img src='images/Heartsmall.png' alt='heart'></div>
             <div class='col-md-2 heart'><img src='images/Heartsmall.png' alt='heart'></div>
           </div>
-          <div class='col-md-offset-4 col-md-5 text-right gems'>
-            <p class='score'>0 Gems collected!</p>
+          <div class='col-md-offset-3 col-md-3 text-left kills'>
+            <p class='kills'><span class='num numKills'>0</span>Kills</p>
+          </div>
+          <div class='col-md-offset-1 col-md-3 text-right gems'>
+            <p class='score'><span class='num numGems'>0</span>Gems</p>
           </div>
         </div>
       </div>
@@ -56,7 +59,7 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 <!--Gun Modal view-->
-    <div class="modal fade" id='GunModal'>
+    <div class="modal" id='GunModal'>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -70,11 +73,11 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 <!--Game Over Modal view-->
-    <div class="modal fade" id='GOModal'>
+    <div class="modal" id='GOModal'>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <button type="button" class="close" data-dismiss="modal" onClick="window.location.reload()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h2 class="modal-title">Game Over</h2>
           </div>
           <div class="modal-body">

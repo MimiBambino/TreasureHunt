@@ -1,10 +1,12 @@
-$(".close").on("click", function(){
-  $("#InstructionsModal").removeClass('show');
+$("#InstructionsModal .close").on("click", function(){
+  $("#InstructionsModal").removeClass('show')
+  gamePaused = false;
 });
 var rows = [60, 143, 226];
 var enemySpeed = [70, 100, 160, 200];
 var columns = [0, 101, 202, 303, 404, 505, 606, 707, 808];
 var gemImages = ['images/gemOrange.png', 'images/gemBlue.png', 'images/gemGreen.png'];
+var gamePaused = true;
 
 // Randomly choose an element from an array.
 var choice = function (array) {
@@ -53,7 +55,7 @@ Enemy.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  if (!game.paused) {
+  if (!gamePaused) {
     this.x += this.speed * dt;
     // if bug crawls off the canvas
     if (this.x > 960) {
@@ -94,6 +96,9 @@ Enemy.prototype.update = function(dt) {
     if (bullet.checkCollision(this)){
       this.reset();
       allBullets.splice(bullet);
+      score.bugsKilled += 1;
+      //  Update score  //
+      $(".numKills").text(score.bugsKilled);
     }
   }
 }
@@ -121,7 +126,7 @@ var Player = function() {
 }
 
 Player.prototype.update = function() {
-  if (!game.paused){
+  if (!gamePaused){
     if (this.ctlKey === 'left' && this.x != 0) {
       this.x = this.x - 101;
     } else if (this.ctlKey === 'right' && this.x != 808) {
@@ -170,19 +175,18 @@ Gem.prototype.update = function() {
     this.x = choice(columns);
     this.y = choice(rows);
     this.count += 1;
-    if (this.count === 1){
-      var scoreHTML = "<p class='score'>%score% Gem collected!</p>";
-      var formattedScore = scoreHTML.replace("%score%", this.count);
-    } else {
-      var scoreHTML = "<p class='score'><span class='num'>%score%<span> Gems collected!</p>";
-      var formattedScore = scoreHTML.replace("%score%", this.count);
-    }
-    $(".score").remove();
     //////////  Update score  //////////
-    $(".gems").append(formattedScore);
+    $(".numGems").text(this.count);
+    // Award Gun if 10 gems collected
     if (this.count == 10){
+      gamePaused = true;
       player.gunFound = true;
-      $("#GunModal").modal();
+      $("#GunModal").addClass('show');
+      $(".kills").css("visibility", 'visible');
+      $(".close").on("click", function(){
+        gamePaused = false;
+        $("#GunModal").removeClass('show');
+      });
     }
   }
 }
@@ -202,8 +206,8 @@ Heart.prototype.decrease = function() {
     this.display();
   } else {
     $(".heart").remove();
-    game.paused = true;
-    $("#GOModal").modal();
+    gamePaused = true;
+    $("#GOModal").addClass('show');
     $(".btn").text('Play Again!');
   }
 }
@@ -217,14 +221,10 @@ Heart.prototype.display = function() {
   }
 }
 
-var Game = function(){
-  this.paused = false;
-};
-
 ////////////// Playing with Guns and Land Mines ///////////////
 
 var Bullet = function() {
-  this.sprite = 'images/bullet.png';
+  this.sprite = 'images/star.png';
   this.speed = 500;
   this.x = player.x + 45;
   this.y = player.y + 40;
@@ -240,8 +240,10 @@ Bullet.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  this.y -= this.speed * dt;
-  // Remove the bullet if it goes offscreen
+  if (!gamePaused){
+    this.y -= this.speed * dt;
+    // Remove the bullet if it goes offscreen
+  }
   if (this.y < 65){
     allBullets.splice(this);
   }
@@ -278,6 +280,11 @@ Bullet.prototype.checkCollision = function(enemy){
     return verticalCollision && horizontalCollision;
   }
 
+var score = {
+  bugsKilled: 0,
+  gemsCollected: 0
+}
+
 ///////////// End Playing with Guns and Land Mines /////////////
 
 // Now instantiate your objects.
@@ -294,8 +301,6 @@ var bulletA = new Bullet();
 var bulletB = new Bullet();
 var bulletC = new Bullet();
 var allBullets = [];
-var game = new Game();
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

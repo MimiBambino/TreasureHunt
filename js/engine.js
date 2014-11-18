@@ -92,6 +92,8 @@ var Engine = (function(global) {
     'images/gemBlue.png',
     'images/gemGreen.png',
     'images/bullet.png',
+    'images/star.png',
+    'images/rock.png',
     'images/sprites.png'  // Load explosion and bullets
   ]);
   Resources.onReady(init);
