@@ -22,14 +22,12 @@ var Engine = (function(global) {
   };
 
   function init() {
-    //reset();
     lastTime = Date.now();
     main();
   }
 
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
     allEnemies.forEach(function(enemy){
       allBullets.forEach(function(bullet){
       bullet.checkCollision(enemy);
@@ -91,70 +89,9 @@ var Engine = (function(global) {
     'images/gemOrange.png',
     'images/gemBlue.png',
     'images/gemGreen.png',
-    'images/bullet.png',
-    'images/star.png',
-    'images/rock.png',
-    'images/sprites.png'  // Load explosion and bullets
+    'images/Star.png',
   ]);
   Resources.onReady(init);
 
   global.ctx = ctx;
 })(this);
-
-// Animation helper  from https://github.com/jlongster/canvas-game-bootstrap/blob/a878158f39a91b19725f726675c752683c9e1c08/js/sprite.js
-/*
-(function() {
-    function Sprite(url, pos, size, speed, frames, dir, once) {
-        this.pos = pos;
-        this.size = size;
-        this.speed = typeof speed === 'number' ? speed : 0;
-        this.frames = frames;
-        this._index = 0;
-        this.url = url;
-        this.dir = dir || 'horizontal';
-        this.once = once;
-    };
-
-    Sprite.prototype = {
-        update: function(dt) {
-            this._index += this.speed*dt;
-        },
-
-        render: function(ctx) {
-            var frame;
-
-            if(this.speed > 0) {
-                var max = this.frames.length;
-                var idx = Math.floor(this._index);
-                frame = this.frames[idx % max];
-
-                if(this.once && idx >= max) {
-                    this.done = true;
-                    return;
-                }
-            }
-            else {
-                frame = 0;
-            }
-
-            var x = this.pos[0];
-            var y = this.pos[1];
-
-            if(this.dir == 'vertical') {
-                y += frame * this.size[1];
-            }
-            else {
-                x += frame * this.size[0];
-            }
-
-            ctx.drawImage(resources.get(this.url),
-                          x, y,
-                          this.size[0], this.size[1],
-                          0, 0,
-                          this.size[0], this.size[1]);
-        }
-    };
-
-    window.Sprite = Sprite;
-})();
-*/

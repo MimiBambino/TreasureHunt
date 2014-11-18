@@ -207,3 +207,8 @@ footer {
 .modal {
   padding: 200px;
 }
+
+.modal-body {
+  font-size: 1.5em;
+  font-weight: 300;
+}

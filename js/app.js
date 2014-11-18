@@ -1,11 +1,8 @@
-$("#InstructionsModal .close").on("click", function(){
-  $("#InstructionsModal").removeClass('show')
-  gamePaused = false;
-});
 var rows = [60, 143, 226];
 var enemySpeed = [70, 100, 160, 200];
 var columns = [0, 101, 202, 303, 404, 505, 606, 707, 808];
 var gemImages = ['images/gemOrange.png', 'images/gemBlue.png', 'images/gemGreen.png'];
+var bulletImages = ['images/Star.png', 'images/Rock.png'];
 var gamePaused = true;
 
 // Randomly choose an element from an array.
@@ -13,40 +10,14 @@ var choice = function (array) {
     return array[Math.floor(Math.random() * array.length)];
 };
 
-// Determine if bounds of entities collide
-// From Pro JavaScript Development
-var checkCollision = function(charX, charWidth, charY,
-  charHeight, obstacleX, obstacleWidth, obstacleY, obstacleHeight){
-    // Define vars to track collision on x axis and on y axis
-    var verticalCollision = false,
-        horizontalCollision = false,
 
-        // define bounds of character and obstacle
-        charRight = charX + charWidth,
-        charBottom = charY + charHeight,
-        obstacleRight = obstacleX + obstacleWidth,
-        obstacleBottom = obstacleY + obstacleHeight;
-    // y-axis collision occurs if
-      // the character's top or bottom is between the top and bottom of obstacle
-      if ((charY > obstacleY && charY < obstacleBottom) ||
-         (charBottom > obstacleY && charY < obstacleBottom)){
-           verticalCollision = true;
-         }
-    // x-axis collision occurs if
-      // the character's left or right is between the left and right of obstacle
-      if ((charX > obstacleX && charX < obstacleRight) ||
-         (charRight > obstacleX && charX < obstacleRight )){
-           horizontalCollision = true;
-         }
-    return verticalCollision && horizontalCollision;
-  }
 
 // Enemies to avoid.
 var Enemy = function() {
   this.sprite = 'images/enemy-bug.png';
   this.x = -100;
   this.y = choice(rows);
-  this.width = 101;
+  this.width = 70;
   this.height = 83;
   this.speed = choice(enemySpeed);
 }
@@ -63,34 +34,12 @@ Enemy.prototype.update = function(dt) {
       this.reset();
     }
   }
-// track which tile each bug is on
-  if (this.x > -50 && this.x < 50) {
-    this.tileX = 0;
-  } else if (this.x > 50 && this.x < 150) {
-    this.tileX = 101;
-  } else if (this.x > 150 && this.x < 250) {
-    this.tileX = 202;
-  } else if (this.x > 250 && this.x < 350) {
-    this.tileX = 303;
-  } else if (this.x > 350 && this.x < 450) {
-    this.tileX = 404;
-  } else if (this.x > 450 && this.x < 550) {
-    this.tileX = 505;
-  } else if (this.x > 550 && this.x < 650) {
-    this.tileX = 606;
-  } else if (this.x > 650 && this.x < 750) {
-    this.tileX = 707;
-  } else if (this.x > 750 && this.x < 850) {
-    this.tileX = 808;
-  } else if (this.x > 850) {
-    this.tileX = 1;
-  }
-// if player is on the same tile as a bug
-  if (player.x === this.tileX && player.y === this.y) {
-    // place player at the initial position
+  // Check for collision with player
+  if (this.checkCollision()){
     player.reset();
     heartCount.decrease();
   }
+  // Check for collision with bullet
   for (var i = 0; i < allBullets.length; i++){
     var bullet = allBullets[i];
     if (bullet.checkCollision(this)){
@@ -102,6 +51,38 @@ Enemy.prototype.update = function(dt) {
     }
   }
 }
+
+Enemy.prototype.checkCollision = function(){
+        // create enemy variables for comparison
+    var charX = this.x,
+        charWidth = this.width,
+        charY = this.y,
+        charHeight = this.height,
+        // Create bullet variables for comparison
+        obstacleX = player.x,
+        obstacleWidth = player.width,
+        obstacleY = player.y,
+        obstacleHeight = player.height,
+        // Define vars to track collision on x axis and on y axis
+        verticalCollision = false,
+        horizontalCollision = false,
+        // Define bounds of character and obstacle
+        charRight = charX + charWidth,
+        charBottom = charY + charHeight,
+        obstacleRight = obstacleX + obstacleWidth,
+        obstacleBottom = obstacleY + obstacleHeight;
+      // Is character's top or bottom is between the top and bottom of obstacle?
+      if ((charY > obstacleY && charY < obstacleBottom) ||
+         (charBottom > obstacleY && charY < obstacleBottom)){
+           verticalCollision = true;
+         }
+      // Is character's left or right is between the left and right of obstacle
+      if ((charX > obstacleX && charX < obstacleRight) ||
+         (charRight > obstacleX && charX < obstacleRight )){
+           horizontalCollision = true;
+         }
+    return verticalCollision && horizontalCollision;
+  }
 
 Enemy.prototype.reset = function() {
   this.x = -100;
@@ -121,6 +102,8 @@ var Player = function() {
   this.pImg = 'images/char-princess-girl.png';
   this.x = 404;
   this.y = 392;
+  this.width = 50;
+  this.height = 50;
   this.lives = 3;  // Keep track of player lives.
   this.gunFound = false;
 }
@@ -141,7 +124,7 @@ Player.prototype.update = function() {
     this.ctlKey = null;
 
     if (this.y < 60) {
-      this.reset();
+      player.reset();
       heartCount.decrease();
     }
   }
@@ -221,13 +204,11 @@ Heart.prototype.display = function() {
   }
 }
 
-////////////// Playing with Guns and Land Mines ///////////////
-
 var Bullet = function() {
-  this.sprite = 'images/star.png';
+  this.sprite = 'images/Star.png';
   this.speed = 500;
-  this.x = player.x + 45;
-  this.y = player.y + 40;
+  this.x = player.x + 30;
+  this.y = player.y + 35;
   this.height = 10;
   this.width = 13;
 }
@@ -320,3 +301,8 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
   }
 }, false);
+
+$("#InstructionsModal .close").on("click", function(){
+  $("#InstructionsModal").removeClass('show')
+  gamePaused = false;
+});
