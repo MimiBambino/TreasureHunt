@@ -30,6 +30,11 @@ var Engine = (function(global) {
   function update(dt) {
     updateEntities(dt);
     // checkCollisions();
+    allEnemies.forEach(function(enemy){
+      allBullets.forEach(function(bullet){
+      bullet.checkCollision(enemy);
+      })
+    })
   }
 
   function updateEntities(dt) {

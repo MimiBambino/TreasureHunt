@@ -13,27 +13,27 @@ var choice = function (array) {
 
 // Determine if bounds of entities collide
 // From Pro JavaScript Development
-var checkCollision = function(charLeft, charWidth, charTop,
-  charHeight, obstacleLeft, obstacleWidth, obstacleTop, obstacleHeight){
+var checkCollision = function(charX, charWidth, charY,
+  charHeight, obstacleX, obstacleWidth, obstacleY, obstacleHeight){
     // Define vars to track collision on x axis and on y axis
     var verticalCollision = false,
         horizontalCollision = false,
 
         // define bounds of character and obstacle
-        charRight = charLeft + charWidth,
-        charBottom = charTop + charHeight,
-        obstacleRight = obstacleLeft + obstacleWidth,
-        obstacleBottom = obstacleTop + obstacleHeight;
+        charRight = charX + charWidth,
+        charBottom = charY + charHeight,
+        obstacleRight = obstacleX + obstacleWidth,
+        obstacleBottom = obstacleY + obstacleHeight;
     // y-axis collision occurs if
       // the character's top or bottom is between the top and bottom of obstacle
-      if ((charTop > obstacleTop && charTop < obstacleBottom) ||
-         (charBottom > obstacleTop && charTop < obstacleBottom)){
+      if ((charY > obstacleY && charY < obstacleBottom) ||
+         (charBottom > obstacleY && charY < obstacleBottom)){
            verticalCollision = true;
          }
     // x-axis collision occurs if
       // the character's left or right is between the left and right of obstacle
-      if ((charLeft > obstacleLeft && charLeft < obstacleRight) ||
-         (charRight > obstacleLeft && charLeft < obstacleRight )){
+      if ((charX > obstacleX && charX < obstacleRight) ||
+         (charRight > obstacleX && charX < obstacleRight )){
            horizontalCollision = true;
          }
     return verticalCollision && horizontalCollision;
@@ -44,6 +44,8 @@ var Enemy = function() {
   this.sprite = 'images/enemy-bug.png';
   this.x = -100;
   this.y = choice(rows);
+  this.width = 101;
+  this.height = 83;
   this.speed = choice(enemySpeed);
 }
 // Update enemy's position.
@@ -89,8 +91,9 @@ Enemy.prototype.update = function(dt) {
   }
   for (var i = 0; i < allBullets.length; i++){
     var bullet = allBullets[i];
-    if (bullet.x === this.tileX && bullet.x === this.y) {
+    if (bullet.checkCollision(this)){
       this.reset();
+      allBullets.splice(bullet);
     }
   }
 }
@@ -113,7 +116,7 @@ var Player = function() {
   this.pImg = 'images/char-princess-girl.png';
   this.x = 404;
   this.y = 392;
-  this.lives = 3;  // Keep track of how many times player has died.
+  this.lives = 3;  // Keep track of player lives.
   this.gunFound = false;
 }
 
@@ -225,6 +228,8 @@ var Bullet = function() {
   this.speed = 500;
   this.x = player.x + 45;
   this.y = player.y + 40;
+  this.height = 10;
+  this.width = 13;
 }
 
 Bullet.prototype.render = function() {
@@ -241,6 +246,37 @@ Bullet.prototype.update = function(dt) {
     allBullets.splice(this);
   }
 }
+Bullet.prototype.checkCollision = function(enemy){
+        // create enemy variables for comparison
+    var charX = enemy.x,
+        charWidth = enemy.width,
+        charY = enemy.y,
+        charHeight = enemy.height,
+        // Create bullet variables for comparison
+        obstacleX = this.x,
+        obstacleWidth = this.width,
+        obstacleY = this.y,
+        obstacleHeight = this.height,
+        // Define vars to track collision on x axis and on y axis
+        verticalCollision = false,
+        horizontalCollision = false,
+        // Define bounds of character and obstacle
+        charRight = charX + charWidth,
+        charBottom = charY + charHeight,
+        obstacleRight = obstacleX + obstacleWidth,
+        obstacleBottom = obstacleY + obstacleHeight;
+      // Is character's top or bottom is between the top and bottom of obstacle?
+      if ((charY > obstacleY && charY < obstacleBottom) ||
+         (charBottom > obstacleY && charY < obstacleBottom)){
+           verticalCollision = true;
+         }
+      // Is character's left or right is between the left and right of obstacle
+      if ((charX > obstacleX && charX < obstacleRight) ||
+         (charRight > obstacleX && charX < obstacleRight )){
+           horizontalCollision = true;
+         }
+    return verticalCollision && horizontalCollision;
+  }
 
 ///////////// End Playing with Guns and Land Mines /////////////
 
