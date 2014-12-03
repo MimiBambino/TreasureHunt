@@ -10,8 +10,6 @@ var choice = function (array) {
     return array[Math.floor(Math.random() * array.length)];
 };
 
-
-
 // Enemies to avoid.
 var Enemy = function() {
   this.sprite = 'images/enemy-bug.png';
@@ -20,12 +18,13 @@ var Enemy = function() {
   this.width = 70;
   this.height = 83;
   this.speed = choice(enemySpeed);
-}
+};
 // Update enemy's position.
 Enemy.prototype.update = function(dt) {
-  // You should multiply any movement by the dt parameter
-  // which will ensure the game runs at the same speed for
-  // all computers.
+  /**
+  * Multiply any movement by the dt parameter which ensures the game runs 
+  *     at the same speed for all computers.
+  */
   if (!gamePaused) {
     this.x += this.speed * dt;
     // if bug crawls off the canvas
@@ -35,14 +34,14 @@ Enemy.prototype.update = function(dt) {
     }
   }
   // Check for collision with player
-  if (this.checkCollision()){
+  if (this.checkCollision()) {
     player.reset();
     heartCount.decrease();
   }
   // Check for collision with bullet
-  for (var i = 0; i < allBullets.length; i++){
+  for (var i = 0; i < allBullets.length; i++) {
     var bullet = allBullets[i];
-    if (bullet.checkCollision(this)){
+    if (bullet.checkCollision(this)) {
       this.reset();
       allBullets.splice(bullet);
       score.bugsKilled += 1;
@@ -50,9 +49,9 @@ Enemy.prototype.update = function(dt) {
       $(".numKills").text(score.bugsKilled);
     }
   }
-}
+};
 
-Enemy.prototype.checkCollision = function(){
+Enemy.prototype.checkCollision = function() {
         // create enemy variables for comparison
     var charX = this.x,
         charWidth = this.width,
@@ -73,16 +72,16 @@ Enemy.prototype.checkCollision = function(){
         obstacleBottom = obstacleY + obstacleHeight;
       // Is character's top or bottom is between the top and bottom of obstacle?
       if ((charY > obstacleY && charY < obstacleBottom) ||
-         (charBottom > obstacleY && charY < obstacleBottom)){
+         (charBottom > obstacleY && charY < obstacleBottom)) {
            verticalCollision = true;
          }
       // Is character's left or right is between the left and right of obstacle
       if ((charX > obstacleX && charX < obstacleRight) ||
-         (charRight > obstacleX && charX < obstacleRight )){
+         (charRight > obstacleX && charX < obstacleRight )) {
            horizontalCollision = true;
          }
     return verticalCollision && horizontalCollision;
-  }
+ };
 
 Enemy.prototype.reset = function() {
   this.x = -100;
@@ -91,11 +90,11 @@ Enemy.prototype.reset = function() {
   if (this.y > 226) {
     this.y = 60;
   }
-}
+};
 
 Enemy.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Player class
 var Player = function() {
@@ -106,10 +105,10 @@ var Player = function() {
   this.height = 50;
   this.lives = 3;  // Keep track of player lives.
   this.gunFound = false;
-}
+};
 
 Player.prototype.update = function() {
-  if (!gamePaused){
+  if (!gamePaused) {
     if (this.ctlKey === 'left' && this.x != 0) {
       this.x = this.x - 101;
     } else if (this.ctlKey === 'right' && this.x != 808) {
@@ -128,20 +127,20 @@ Player.prototype.update = function() {
       heartCount.decrease();
     }
   }
-}
+};
 
 Player.prototype.reset = function() {
   this.x = 404;
   this.y = 392;
-}
+};
 
 Player.prototype.render = function() {
   ctx.drawImage(Resources.get(this.pImg), this.x, this.y);
-}
+};
 
 Player.prototype.handleInput = function(key) {
   this.ctlKey = key;
-}
+};
 
 // Choose gem and place on canvas.
 var Gem = function() {
@@ -149,7 +148,7 @@ var Gem = function() {
   this.x = choice(columns);
   this.y = choice(rows);
   this.count = 0;
-}
+};
 
 // Update gem position when player touches it.
 Gem.prototype.update = function() {
@@ -166,22 +165,22 @@ Gem.prototype.update = function() {
       player.gunFound = true;
       $("#GunModal").addClass('show');
       $(".kills").css("visibility", 'visible');
-      $(".close").on("click", function(){
+      $(".close").on("click", function() {
         gamePaused = false;
         $("#GunModal").removeClass('show');
       });
     }
   }
-}
+};
 
 Gem.prototype.render = function() {
   ctx.drawImage(Resources.get(this.gemImg), this.x, this.y);
-}
+};
 
 // Keep track of player lives
 var Heart = function() {
   this.sprite = 'images/Heartsmall.png';
-}
+};
 
 Heart.prototype.decrease = function() {
   if (player.lives > 0) {
@@ -193,7 +192,7 @@ Heart.prototype.decrease = function() {
     $("#GOModal").addClass('show');
     $(".btn").text('Play Again!');
   }
-}
+};
 
 Heart.prototype.display = function() {
   $(".heart").remove();
@@ -202,7 +201,7 @@ Heart.prototype.display = function() {
     var formattedHTML = HTML.replace("%img%", this.sprite);
     $(".hearts").append(formattedHTML);
   }
-}
+};
 
 var Bullet = function() {
   this.sprite = 'images/Star.png';
@@ -211,25 +210,25 @@ var Bullet = function() {
   this.y = player.y + 35;
   this.height = 10;
   this.width = 13;
-}
+};
 
 Bullet.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Bullet.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  if (!gamePaused){
+  if (!gamePaused) {
     this.y -= this.speed * dt;
     // Remove the bullet if it goes offscreen
   }
-  if (this.y < 65){
+  if (this.y < 65) {
     allBullets.splice(this);
   }
-}
-Bullet.prototype.checkCollision = function(enemy){
+};
+Bullet.prototype.checkCollision = function(enemy) {
         // create enemy variables for comparison
     var charX = enemy.x,
         charWidth = enemy.width,
@@ -250,23 +249,21 @@ Bullet.prototype.checkCollision = function(enemy){
         obstacleBottom = obstacleY + obstacleHeight;
       // Is character's top or bottom is between the top and bottom of obstacle?
       if ((charY > obstacleY && charY < obstacleBottom) ||
-         (charBottom > obstacleY && charY < obstacleBottom)){
+         (charBottom > obstacleY && charY < obstacleBottom)) {
            verticalCollision = true;
          }
       // Is character's left or right is between the left and right of obstacle
       if ((charX > obstacleX && charX < obstacleRight) ||
-         (charRight > obstacleX && charX < obstacleRight )){
+         (charRight > obstacleX && charX < obstacleRight )) {
            horizontalCollision = true;
          }
     return verticalCollision && horizontalCollision;
-  }
+};
 
 var score = {
   bugsKilled: 0,
   gemsCollected: 0
-}
-
-///////////// End Playing with Guns and Land Mines /////////////
+};
 
 // Now instantiate your objects.
 var enemyA = new Enemy();
@@ -283,8 +280,10 @@ var bulletB = new Bullet();
 var bulletC = new Bullet();
 var allBullets = [];
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+/**
+* This listens for key presses and sends the keys to your Player.handleInput() method. 
+* You don't need to modify this.
+*/
 document.addEventListener('keyup', function(e) {
   var allowedKeys = {
     37: 'left',
@@ -302,7 +301,7 @@ document.addEventListener('keydown', function(e) {
   }
 }, false);
 
-$("#InstructionsModal .close").on("click", function(){
+$("#InstructionsModal .close").on("click", function() {
   $("#InstructionsModal").removeClass('show')
   gamePaused = false;
 });
