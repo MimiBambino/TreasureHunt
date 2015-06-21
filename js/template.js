@@ -15,7 +15,7 @@ var bio = {
 	"name": "Cynthia O'Donnell",
 	"project": "Treasure Hunt",
 	"contacts": {
-		"website" : "www.mimibambino.com", 
+		"website" : "www.cynthiaodonnell.com", 
 		"email" : "mimibambino@gmail.com",
 		"twitter" : "@mimibambino",
 		"github" : "MimiBambino",
